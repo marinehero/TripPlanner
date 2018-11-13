@@ -1,0 +1,36 @@
+//
+//  AutoCompleteDataSource.swift
+//  TripPlanner
+//
+//  Created by James Pereira on 2018/11/05.
+//  Copyright © 2018 Code Challenge. All rights reserved.
+//
+
+import Foundation
+
+public class AutoCompleteDataSource {
+    public var data: [AutoCompletable]
+    public var autoCompleteTrie: AutoCompleteTrie?
+    
+    public init(data: [AutoCompletable]) {
+        self.data = data
+    }
+    
+    public func constructTrie(isCaseSensitive: Bool = false) {
+        autoCompleteTrie = AutoCompleteTrie(dataSource: data, isCaseSensitive: false)
+    }
+    
+    public func insert(autoCompletable: AutoCompletable) {
+        data.append(autoCompletable)
+        if let autoCompleteTrie = autoCompleteTrie {
+            autoCompleteTrie.insert(autoCompletable: autoCompletable)
+        }
+    }
+    
+    public func remove(allMatching autoCompleteString: String) {
+        data = data.filter { $0.autocompleteString != autoCompleteString }
+        if let autoCompleteTrie = autoCompleteTrie {
+            autoCompleteTrie.remove(allMatching: autoCompleteString)
+        }
+    }
+}
