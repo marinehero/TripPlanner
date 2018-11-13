@@ -65,6 +65,24 @@ Open the TripPlanner.xcodeproj file with XCode
 
 .
 
+## REVIEW
+
+### Good:
+
+• Nice autocomplete labels
+• Cost calculation seems to be working fine
+• Using decodable
+• Able to fetch destinations either via URLRequest or json file
+
+### Not so good:
+
+• Not so good architecture (Route calculation in the ViewController)
+• A lot of methods declared as public / open?
+• Map coordinates is not working properly
+• Theme is a nice touch but not uniform and dynamic (Any view can pick any theme it wants, should exists a currentTheme var somewhere)
+• Autocomplete shows cities that are not in the list
+• Unnecessary or unrelated code in the project
+
 ## Enhancements
 
 Pressing <return> on empty field to get drop down list of trips - needs to be more intuitive
