@@ -8,7 +8,7 @@
 
 import Foundation
 import AVFoundation
-
+import UIKit
 //import PlaygroundSupport
 
 var Current = Services()
@@ -21,7 +21,7 @@ struct Services {
 
 protocol IGetTrips {
     
-    typealias OnDataCallback = (_ r: Result?) -> Void
+    typealias OnDataCallback = (_ result: Result?, _ error: Error?) -> Void
 
     func getTrips(_ completion: @escaping OnDataCallback )
 
@@ -65,7 +65,7 @@ struct APIBundle : IGetTrips {
                 do {
                     let jsonData = try Data(contentsOf: url, options: Data.ReadingOptions.mappedIfSafe)
                     let json = try JSONDecoder().decode(Result.self, from: jsonData)
-                    completion(json)
+                    completion(json,nil)
                     return
                     
                 } catch {
@@ -90,6 +90,17 @@ struct APINetwork : IGetTrips {
     let endPoint = "https://raw.githubusercontent.com/TuiMobilityHub/ios-code-challenge/master/"
     let sampleFile = "connections.json"
     
+    static private func getRootViewController() -> UIViewController? {
+        if var topController = UIApplication.shared.keyWindow?.rootViewController {
+            while let presentedViewController = topController.presentedViewController {
+                topController = presentedViewController
+            }
+            // topController should now be your topmost view controller
+            return topController
+        }
+        return nil;
+    }
+    
     func getTrips(_ completion: @escaping OnDataCallback ) {
         
         let sessionConfig = URLSessionConfiguration.default
@@ -104,25 +115,25 @@ struct APINetwork : IGetTrips {
                 print("URL Session Task Succeeded: HTTP \(statusCode)")
                 
                 guard let data = data else {
-                    completion(nil)
+                    completion(nil,nil)
                     print("no data")
                     return
                 }
                 
                 do {
                     let r = try JSONDecoder().decode(Result.self, from: data)
-                    completion(r)
+                    completion(r,nil)
                 }
                 catch let jsonErr {
                     print(jsonErr)
-                    completion(nil)
+                    completion(nil,jsonErr)
                 }
                 
             }
             else {
                 // Failure
-                print("URL Session Task Failed: %@", error!.localizedDescription);
-                completion(nil)
+                print("URL Session Task Failed: %@", error!.localizedDescription)
+                completion(nil,error)
             }
         })
         task.resume()
@@ -141,11 +152,11 @@ struct APIPlayground : IGetTrips {
             do {
                 let data = try Data(contentsOf: path)
                 let json = try JSONDecoder().decode(Result.self, from: data)
-                completion(json)
+                completion(json,nil)
             }
             catch let ioErr { /* error handling here */
                 print(ioErr)
-                completion(nil)
+                completion(nil,ioErr)
             }
         }
 

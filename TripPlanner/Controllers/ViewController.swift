@@ -12,8 +12,8 @@ import MapKit
 
 class ViewController: UIViewController {
     
-    var fromAirport: ACTextField?
-    var destAirport: ACTextField?
+    var fromAirport: AutoCompleteTextField?
+    var destAirport: AutoCompleteTextField?
     var btn: UIButton?
     var lbl: UILabel?
     var mapView: MKMapView?
@@ -29,8 +29,8 @@ class ViewController: UIViewController {
  
     @objc func actionBtnDidPress(_ sender: UIButton) {
         view.endEditing(true)
-        let bundles = [Bundle(for: ViewController.self)]
-        Strategy.testViaNetwork(bundles,onDataAvailable)
+        Current.api = APIBundle([Bundle(for: ViewController.self)]) // APINetwork()
+        Strategy.getTrips(using: Current.api, onDataAvailable)
     }
 
 }
@@ -39,7 +39,16 @@ class ViewController: UIViewController {
 
 extension ViewController {
     
-    public func onDataAvailable(_ result: Result? ) {
+    public func onDataAvailable(_ result: Result?, _ errorThrown: Error? ) {
+        
+        if let error = errorThrown {
+            DispatchQueue.main.async {
+                let alert = UIAlertController(title: "ⓘ", message: "Data failed : \(error.localizedDescription)", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil)) //  ✔
+                self.present(alert, animated: true)
+            }
+            return
+        }
         
         guard let data = result else {
             print("error: no data")
@@ -49,7 +58,7 @@ extension ViewController {
         DispatchQueue.main.async {
             let (total,schedule) = Strategy.calculateCheapestFlight(from: (self.fromAirport?.text)!, dest: (self.destAirport?.text)!, data: data)
             self.fromAirport?.load(dataSource: Loader.load(from: Loader.fromData))
-            self.destAirport?.load(dataSource: Loader.load(from: Loader.fromData))
+            self.destAirport?.load(dataSource: Loader.load(from: Loader.destData))
             self.lbl?.text = "\(total)"
             self.drawGeodesic(schedule)
         }
@@ -115,19 +124,19 @@ extension ViewController {
 
 //MARK: Use default empty delegate
 
-extension ViewController : ACTextFieldDelegate {
+extension ViewController : AutoCompleteTextFieldDelegate {
 }
 
 //MARK: Factory methods
 
 extension ViewController {
     
-    func makeAutoCompleteField(_ placeholder: String, xPos: CGFloat, yPos: CGFloat, width: CGFloat, height: CGFloat) -> ACTextField {
+    func makeAutoCompleteField(_ placeholder: String, xPos: CGFloat, yPos: CGFloat, width: CGFloat, height: CGFloat) -> AutoCompleteTextField {
         let acpFrame = CGRect(x: Layout.pad.rawValue + xPos,
                               y: yPos, //(self.view.frame.maxY / 4),
                               width: width,
                               height: height)
-        let field = ACTextField(frame: acpFrame)
+        let field = AutoCompleteTextField(frame: acpFrame)
         field.clearButtonMode = .always
         field.placeholder = placeholder
         field.borderStyle = UITextField.BorderStyle.line

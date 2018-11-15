@@ -60,7 +60,8 @@ struct Strategy {
         print( "cheapest = \(total) ( total = \(cost) savings = \(cost-total) )")
         
         Loader.fromData = graph.vertices.compactMap { node in node.data.id }
-        
+        Loader.destData = graph.vertices.compactMap { node in node.data.id }
+
         return (total, schedule)
     }
 
@@ -89,12 +90,10 @@ struct Strategy {
     }
     
 
-    static public func testViaNetwork(_ bundles: [Bundle], _ onDataAvailable: @escaping (_ r: Result?) -> Void ) {
+    static public func getTrips(using api: IGetTrips, _ onDataAvailable: @escaping (_ result: Result?, _ error: Error? ) -> Void ) {
         
-        Current.api = APIBundle(bundles)// APINetwork()// APIBundle(bundles)
-        
-        Current.api.getTrips { r in
-            onDataAvailable(r)
+        api.getTrips { result, error in
+            onDataAvailable(result,error)
         }
         
     }

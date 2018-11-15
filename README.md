@@ -43,7 +43,7 @@ Currently this api can be fullfilled via 3 concrete implementations that impleme
 The /Algorithms/Strategy class  is a facade intended to grow into a property strategy generator that could use/choose best algorithm based on constraints.
 e.g For extremely large data sets the Djikstra algorithm would be faster
 
-My biggest challenges were in implementing the /View/ACTextField set of classes as I did not like the inline autocompletion as one would have to know or guess the data.
+My biggest challenges were in implementing the /View/AutoCompleteTextField set of classes as I did not like the inline autocompletion as one would have to know or guess the data.
 So I decided to implement a UITextField that would use a scrollable drop down UITableView which gets populated with the list of airports/cities to choose from.
 What I did as a kludge, is that if you clear/empty the field and simply press the <return> key it will list all available destinations, which one can click to select
 

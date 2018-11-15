@@ -1,5 +1,5 @@
 //
-//  ACTextField.swift
+//  AutoCompleteTextField.swift
 //  TripPlanner
 //
 //  Created by James Pereira on 2018/11/03.
@@ -9,40 +9,42 @@
 import Foundation
 import UIKit
 
-// MARK: - ACTextFieldDelegate
-public protocol ACTextFieldDelegate: class {
+// MARK: - AutoCompleteTextFieldDelegate
+
+public protocol AutoCompleteTextFieldDelegate: class {
     /// Called when auto-complete results are updated.
-    /// - parameter textField: The `ACTextField` filtering the results.
+    /// - parameter textField: The `AutoCompleteTextField` filtering the results.
     /// - parameter results: A list of `AutoCompletable` results, or `nil` if the text field has no text in it.
-    func autoCompleteTextField(_ textField: ACTextField, didFilter results: [AutoCompletable]?)
+    func autoCompleteTextField(_ textField: AutoCompleteTextField, didFilter results: [AutoCompletable]?)
     
     /// Called before a result is about to be selected.
-    /// - parameter textField: The `ACTextField` the result is selected from.
+    /// - parameter textField: The `AutoCompleteTextField` the result is selected from.
     /// - parameter result: The `AutoCompletable` result that is about to be selected.
     /// - returns: `true` if the result should be selected, or `false` if it should not.
-    func autoCompleteTextField(_ textField: ACTextField, shouldSelect result: AutoCompletable) -> Bool
+    func autoCompleteTextField(_ textField: AutoCompleteTextField, shouldSelect result: AutoCompletable) -> Bool
     
     /// Called after a result is selected.
-    /// - parameter textField: The `ACTextField` the result is selected from.
+    /// - parameter textField: The `AutoCompleteTextField` the result is selected from.
     /// - parameter result: The `AutoCompletable` result that was just selected.
-    func autoCompleteTextField(_ textField: ACTextField, didSelect result: AutoCompletable)
+    func autoCompleteTextField(_ textField: AutoCompleteTextField, didSelect result: AutoCompletable)
 }
 
-// MARK: - ACTextFieldDelegate Default Implementation
-public extension ACTextFieldDelegate {
-    func autoCompleteTextField(_ textField: ACTextField, didFilter results: [AutoCompletable]?) {
+// MARK: - AutoCompleteTextFieldDelegate Default Implementation
+public extension AutoCompleteTextFieldDelegate {
+    func autoCompleteTextField(_ textField: AutoCompleteTextField, didFilter results: [AutoCompletable]?) {
         
     }
-    func autoCompleteTextField(_ textField: ACTextField, shouldSelect result: AutoCompletable) -> Bool {
+    func autoCompleteTextField(_ textField: AutoCompleteTextField, shouldSelect result: AutoCompletable) -> Bool {
         return true
     }
-    func autoCompleteTextField(_ textField: ACTextField, didSelect result: AutoCompletable) {
+    func autoCompleteTextField(_ textField: AutoCompleteTextField, didSelect result: AutoCompletable) {
         
     }
 }
 
-// MARK: - ACTextField
-open class ACTextField: UITextField, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
+// MARK: - AutoCompleteTextField
+
+open class AutoCompleteTextField: UITextField, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
     
     // MARK: - Public Enums
     
@@ -55,7 +57,7 @@ open class ACTextField: UITextField, UITextFieldDelegate, UITableViewDelegate, U
     // MARK: - Public Properties
     
     /// The delegate for auto-complete methods.
-    open weak var autocompleteDelegate: ACTextFieldDelegate?
+    open weak var autocompleteDelegate: AutoCompleteTextFieldDelegate?
     
     /// The list of objects to use in auto-completion.
     open var dataSource: [AutoCompletable] = [] {
@@ -227,7 +229,7 @@ open class ACTextField: UITextField, UITextFieldDelegate, UITableViewDelegate, U
         loadingActivityIndicatorView = UIActivityIndicatorView(style: .gray)
         resultListTableView = UITableView()
         super.init(frame: frame)
-        setupACTextField()
+        setupAutoCompleteTextField()
         formatResultListTableView()//new
     }
     
@@ -236,7 +238,7 @@ open class ACTextField: UITextField, UITextFieldDelegate, UITableViewDelegate, U
         loadingActivityIndicatorView = UIActivityIndicatorView(style: .gray)
         resultListTableView = UITableView()
         super.init(coder: aDecoder)
-        setupACTextField()
+        setupAutoCompleteTextField()
         formatResultListTableView()//new
     }
     
@@ -249,7 +251,7 @@ open class ACTextField: UITextField, UITextFieldDelegate, UITableViewDelegate, U
     
     // MARK: - Setup Functions
     
-    private func setupACTextField() {
+    private func setupAutoCompleteTextField() {
         delegate = self
         resultListTableView.delegate = self
         resultListTableView.dataSource = self
@@ -373,7 +375,7 @@ open class ACTextField: UITextField, UITextFieldDelegate, UITableViewDelegate, U
         }
     }
     
-    /// Loads an `ACTrie` into the `ACTextField`.
+    /// Loads an `ACTrie` into the `AutoCompleteTextField`.
     /// - parameter ACTrie: The trie to load.
     open func load(autoCompleteTrie: AutoCompleteTrie) {
         loadTrieWorkItem?.cancel()
@@ -531,7 +533,7 @@ open class ACTextField: UITextField, UITextFieldDelegate, UITableViewDelegate, U
         text = currentInputText
     }
     
-    private func resetACTextField() {
+    private func resetAutoCompleteTextField() {
         filteredResults = []
         currentInlineAutoCompletionText = ""
         currentInputText = ""
@@ -619,7 +621,7 @@ open class ACTextField: UITextField, UITextFieldDelegate, UITableViewDelegate, U
     }
     
     open func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        resetACTextField()
+        resetAutoCompleteTextField()
         playHideResultListAnimation()
         return textFieldDelegate?.textFieldShouldClear?(textField) ?? true
     }

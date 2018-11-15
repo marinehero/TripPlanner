@@ -24,6 +24,7 @@
 		1A9ADB76218DF1A3006A7F65 /* AutoCompleteTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9ADB75218DF1A3006A7F65 /* AutoCompleteTextField.swift */; };
 		1A9ADB78218DF1DD006A7F65 /* AutoCompleteTrie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9ADB77218DF1DD006A7F65 /* AutoCompleteTrie.swift */; };
 		1A9ADB7A218DFBD4006A7F65 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9ADB79218DFBD4006A7F65 /* ViewController.swift */; };
+		1A9CFD6D219C084400C64F33 /* UILabel_Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9CFD6C219C084400C64F33 /* UILabel_Extension.swift */; };
 		B00BF85D218CADC700836C43 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00BF85C218CADC700836C43 /* AppDelegate.swift */; };
 		B00BF862218CADC700836C43 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B00BF860218CADC700836C43 /* Main.storyboard */; };
 		B00BF864218CADC800836C43 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B00BF863218CADC800836C43 /* Assets.xcassets */; };
@@ -73,6 +74,7 @@
 		1A9ADB75218DF1A3006A7F65 /* AutoCompleteTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoCompleteTextField.swift; sourceTree = "<group>"; };
 		1A9ADB77218DF1DD006A7F65 /* AutoCompleteTrie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoCompleteTrie.swift; sourceTree = "<group>"; };
 		1A9ADB79218DFBD4006A7F65 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		1A9CFD6C219C084400C64F33 /* UILabel_Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabel_Extension.swift; sourceTree = "<group>"; };
 		B00BF859218CADC700836C43 /* TripPlanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TripPlanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B00BF85C218CADC700836C43 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B00BF861218CADC700836C43 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -238,6 +240,7 @@
 				B00BF884218CB21400836C43 /* UIFont_Extension.swift */,
 				B00BF882218CB06F00836C43 /* UIImage_Extension.swift */,
 				B00BF886218CB3CF00836C43 /* Layout.swift */,
+				1A9CFD6C219C084400C64F33 /* UILabel_Extension.swift */,
 			);
 			path = Theme;
 			sourceTree = "<group>";
@@ -408,6 +411,7 @@
 				1A9ADB7A218DFBD4006A7F65 /* ViewController.swift in Sources */,
 				B00BF883218CB06F00836C43 /* UIImage_Extension.swift in Sources */,
 				B00BF887218CB3CF00836C43 /* Layout.swift in Sources */,
+				1A9CFD6D219C084400C64F33 /* UILabel_Extension.swift in Sources */,
 				1A9ADB74218DF150006A7F65 /* AutoCompletable.swift in Sources */,
 				1A476EDD219047B000E3C286 /* BelmanFord.swift in Sources */,
 				1A476EDF219047F100E3C286 /* Models.swift in Sources */,
