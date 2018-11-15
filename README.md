@@ -1,3 +1,5 @@
+![Trip Planner](https://github.com/marinehero/TripPlanner/blob/master/TripPlanner/Assets.xcassets/AppIcon.appiconset/1024-1.png)
+
 # Trip Planner - Code Challenge
 
 ## Specs
