@@ -90,17 +90,6 @@ struct APINetwork : IGetTrips {
     let endPoint = "https://raw.githubusercontent.com/TuiMobilityHub/ios-code-challenge/master/"
     let sampleFile = "connections.json"
     
-    static private func getRootViewController() -> UIViewController? {
-        if var topController = UIApplication.shared.keyWindow?.rootViewController {
-            while let presentedViewController = topController.presentedViewController {
-                topController = presentedViewController
-            }
-            // topController should now be your topmost view controller
-            return topController
-        }
-        return nil;
-    }
-    
     func getTrips(_ completion: @escaping OnDataCallback ) {
         
         let sessionConfig = URLSessionConfiguration.default
