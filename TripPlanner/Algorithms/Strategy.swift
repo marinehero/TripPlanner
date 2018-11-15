@@ -10,7 +10,43 @@ import Foundation
 
 struct Strategy {
     
+    static public func findClosest(using: String, latlong: LatLong, data: Result) -> LatLong {
+        
+        for e in data.connections {
+            if e.from == using && e.coordinates.from.valid {
+                return e.coordinates.from
+            }
+            if e.to == using && e.coordinates.to.valid {
+                return e.coordinates.to
+            }
+        }
+        return latlong
+    }
+    
+    static public func validateAndFix(_ data: Result) -> Bool {
+
+        var autoFixed = false
+        
+        for e in data.connections {
+            if !e.coordinates.from.valid {
+                let latlong = findClosest(using: e.from, latlong:e.coordinates.from, data: data)
+                e.coordinates.from = latlong
+                autoFixed = true
+            }
+            if !e.coordinates.to.valid {
+                let latlong = findClosest(using: e.to, latlong:e.coordinates.to, data: data)
+                e.coordinates.to = latlong
+                autoFixed = true
+            }
+        }
+        return autoFixed
+    }
+    
     static public func calculateCheapestFlight(from: String, dest: String, data: Result) -> (total: Double, schedule: Schedule) {
+        
+        if validateAndFix(data) {
+            print("Invalid coordinate data has been changed...")
+        }
         
         var graph = AdjacencyMatrixGraph<ConnectionMemo>()
         

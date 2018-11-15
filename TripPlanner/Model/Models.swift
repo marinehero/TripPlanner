@@ -11,17 +11,26 @@ import Foundation
 struct LatLong : Decodable {
     let lat: Double
     let long: Double
+    var valid: Bool {
+        get {
+            if lat < -90 { return false }
+            if lat > 90 { return false }
+            if long < -180 { return false }
+            if long > 180 { return false }
+            return true
+        }
+    }
 }
 
 struct Coordinates : Decodable {
-    let from: LatLong
-    let to: LatLong
+    var from: LatLong
+    var to: LatLong
 }
 
 class Connection : Decodable {
     let from: String
     let to: String
-    let coordinates: Coordinates
+    var coordinates: Coordinates
     let price: Double
     init(swap: Connection) {
         to = swap.from

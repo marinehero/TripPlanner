@@ -29,7 +29,7 @@ class ViewController: UIViewController {
  
     @objc func actionBtnDidPress(_ sender: UIButton) {
         view.endEditing(true)
-        Current.api = APIBundle([Bundle(for: ViewController.self)]) // APINetwork()
+        Current.api = APINetwork() // APIBundle([Bundle(for: ViewController.self)]) // APINetwork()
         Strategy.getTrips(using: Current.api, onDataAvailable)
     }
 
