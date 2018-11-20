@@ -56,15 +56,28 @@ extension ViewController {
         }
         
         DispatchQueue.main.async {
-            let (total,schedule) = Strategy.calculateCheapestFlight(from: (self.fromAirport?.text)!, dest: (self.destAirport?.text)!, data: data)
-            self.fromAirport?.load(dataSource: Loader.load(from: Loader.fromData))
-            self.destAirport?.load(dataSource: Loader.load(from: Loader.destData))
+            let (total,schedule,fromData,destData) =
+                Strategy.calculateCheapestFlight(from: (self.fromAirport?.text)!, dest: (self.destAirport?.text)!, data: data)
+            self.refreshDataSources(fromData: fromData, destData: destData)
             self.lbl?.text = "\(total)"
             self.drawGeodesic(schedule)
         }
         
     }
 
+}
+
+//MARK: data related
+
+extension ViewController {
+    
+    private func refreshDataSources(fromData: AutoCompleteDataSource, destData: AutoCompleteDataSource) {
+        let departures = fromData
+        let arrivals = destData
+        fromAirport?.load(dataSource: departures)
+        destAirport?.load(dataSource: arrivals)
+    }
+    
 }
 
 //MARK: Layout methods
@@ -96,8 +109,8 @@ extension ViewController {
         btn = UIButton(frame: brc)
         lbl = UILabel(frame: rrc)
         
-        btn?.layer.cornerRadius = 5
-        btn?.layer.borderWidth = 1
+        btn?.layer.cornerRadius = CGFloat.Theme.defaultProfile.cornerRadius
+        btn?.layer.borderWidth = CGFloat.Theme.defaultProfile.borderWidth
         btn?.layer.borderColor = UIColor.Theme.defaultProfile.buttonBorder.cgColor
         btn?.backgroundColor = UIColor.Theme.defaultProfile.buttonBackground
         btn?.setTitleColor(UIColor.Theme.defaultProfile.buttonText, for: UIControl.State.normal)
@@ -115,9 +128,8 @@ extension ViewController {
         view.addSubview(lbl!)
         view.addSubview(mapView!)
 
-        fromAirport?.load(dataSource: Loader.load(from: Loader.fromData))
-        destAirport?.load(dataSource: Loader.load(from: Loader.destData))
-
+        refreshDataSources(fromData: Loader.load(), destData: Loader.load())
+        
     }
 
 }

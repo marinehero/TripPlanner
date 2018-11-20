@@ -36,6 +36,20 @@ extension UIColor {
             }
         }
 
+        var cornerRadius: CGFloat {
+            switch self {
+            case .defaultProfile:
+                return 5
+            }
+        }
+        
+        var borderWidth: CGFloat {
+            switch self {
+            case .defaultProfile:
+                return 1
+            }
+        }
+        
         var buttonBorder: UIColor {
             switch self {
             case .defaultProfile:
@@ -51,6 +65,36 @@ extension UIColor {
         }
         
 
+    }
+    
+}
+
+extension CGFloat {
+    
+    enum Theme {
+        case defaultProfile
+        
+        var name: String {
+            switch  self {
+            case .defaultProfile:
+                return "defaultProfile"
+            }
+        }
+        
+        var cornerRadius: CGFloat {
+            switch self {
+            case .defaultProfile:
+                return 5
+            }
+        }
+        
+        var borderWidth: CGFloat {
+            switch self {
+            case .defaultProfile:
+                return 1
+            }
+        }
+        
     }
     
 }

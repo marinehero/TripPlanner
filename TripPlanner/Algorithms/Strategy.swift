@@ -42,7 +42,8 @@ struct Strategy {
         return autoFixed
     }
     
-    static public func calculateCheapestFlight(from: String, dest: String, data: Result) -> (total: Double, schedule: Schedule) {
+    static public func calculateCheapestFlight(from: String, dest: String, data: Result)
+        -> (total: Double, schedule: Schedule, fromData: AutoCompleteDataSource, destData: AutoCompleteDataSource) {
         
         if validateAndFix(data) {
             print("Invalid coordinate data has been changed...")
@@ -95,10 +96,11 @@ struct Strategy {
         let total = bellManResult?.distance(vertexTo: destNode) ?? 0.0
         print( "cheapest = \(total) ( total = \(cost) savings = \(cost-total) )")
         
-        Loader.fromData = graph.vertices.compactMap { node in node.data.id }
-        Loader.destData = graph.vertices.compactMap { node in node.data.id }
+        let fromData = graph.vertices.compactMap { node in node.data.id }
+        let destData = graph.vertices.compactMap { node in node.data.id }
 
-        return (total, schedule)
+        return ( total, schedule, Loader.load(from: fromData), Loader.load(from:destData) )
+            
     }
 
     static public func test() {
