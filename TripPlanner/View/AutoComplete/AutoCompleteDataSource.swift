@@ -9,27 +9,27 @@
 import Foundation
 
 public class AutoCompleteDataSource {
-    public var data: [AutoCompletable]
-    public var autoCompleteTrie: AutoCompleteTrie?
+    var data: [AutoCompletable]
+    var autoCompleteTree: AutoCompleteTree?
     
     public init(data: [AutoCompletable]) {
         self.data = data
     }
     
     public func constructTrie(isCaseSensitive: Bool = false) {
-        autoCompleteTrie = AutoCompleteTrie(dataSource: data, isCaseSensitive: false)
+        autoCompleteTree = AutoCompleteTrie(dataSource: data, isCaseSensitive: false)
     }
     
     public func insert(autoCompletable: AutoCompletable) {
         data.append(autoCompletable)
-        if let autoCompleteTrie = autoCompleteTrie {
+        if let autoCompleteTrie = autoCompleteTree {
             autoCompleteTrie.insert(autoCompletable: autoCompletable)
         }
     }
     
     public func remove(allMatching autoCompleteString: String) {
         data = data.filter { $0.autocompleteString != autoCompleteString }
-        if let autoCompleteTrie = autoCompleteTrie {
+        if let autoCompleteTrie = autoCompleteTree {
             autoCompleteTrie.remove(allMatching: autoCompleteString)
         }
     }

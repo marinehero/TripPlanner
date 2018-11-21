@@ -8,6 +8,12 @@
 
 import Foundation
 
+protocol AutoCompleteTree {
+    func insert(autoCompletable: AutoCompletable)
+    func remove(allMatching autoCompleteString: String)
+    func results(for text: String, limit: Int?) -> [AutoCompletable]?
+}
+
 private class AutoCompleteTrieNode {
     fileprivate var value: Character?
     fileprivate var children: [Character: AutoCompleteTrieNode] = [:]
@@ -18,7 +24,7 @@ private class AutoCompleteTrieNode {
     }
 }
 
-public class AutoCompleteTrie {
+public class AutoCompleteTrie : AutoCompleteTree {
     private var root: AutoCompleteTrieNode
     private var isCaseSensitive: Bool
     

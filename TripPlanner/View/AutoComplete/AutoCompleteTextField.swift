@@ -183,7 +183,7 @@ open class AutoCompleteTextField: UITextField, UITextFieldDelegate, UITableViewD
     
     private weak var textFieldDelegate: UITextFieldDelegate?
     
-    private var autoCompleteTrie: AutoCompleteTrie?
+    private var autoCompleteTree: AutoCompleteTree?
     private var filteredResults: [AutoCompletable] = []
     
     private var currentResultListHeight: CGFloat {
@@ -380,17 +380,17 @@ open class AutoCompleteTextField: UITextField, UITextFieldDelegate, UITableViewD
     open func load(autoCompleteTrie: AutoCompleteTrie) {
         loadTrieWorkItem?.cancel()
         loadTrieWorkItem = nil
-        self.autoCompleteTrie = autoCompleteTrie
+        self.autoCompleteTree = autoCompleteTrie
     }
     
     /// Loads an `AutoCompleteDataSource` into the `AutoCompleteTextField`.
     /// - parameter dataSource: The data source to load.
     open func load(dataSource: AutoCompleteDataSource) {
         self.dataSource = dataSource.data
-        if let autoCompleteTrie = dataSource.autoCompleteTrie {
+        if let autoCompleteTrie = dataSource.autoCompleteTree {
             loadTrieWorkItem?.cancel()
             loadTrieWorkItem = nil
-            self.autoCompleteTrie = autoCompleteTrie
+            self.autoCompleteTree = autoCompleteTrie
         }
     }
     
@@ -417,7 +417,7 @@ open class AutoCompleteTextField: UITextField, UITextFieldDelegate, UITableViewD
         loadTrieWorkItem?.cancel()
         loadTrieWorkItem = DispatchWorkItem { [weak self] in
             guard let strongSelf = self else { return }
-            strongSelf.autoCompleteTrie = AutoCompleteTrie(dataSource: strongSelf.dataSource, isCaseSensitive: strongSelf.isCaseSensitive)
+            strongSelf.autoCompleteTree = AutoCompleteTrie(dataSource: strongSelf.dataSource, isCaseSensitive: strongSelf.isCaseSensitive)
             print("Preloaded \(strongSelf.dataSource.count) Total Results")
         }
         guard let loadTrieWorkItem = loadTrieWorkItem else { return }
@@ -450,7 +450,7 @@ open class AutoCompleteTextField: UITextField, UITextFieldDelegate, UITableViewD
         }
         filterDataSourceWorkItem = DispatchWorkItem { [weak self] in
             guard let strongSelf = self else { return }
-            if let ACTrie = strongSelf.autoCompleteTrie {
+            if let ACTrie = strongSelf.autoCompleteTree {
                 strongSelf.filteredResults = ACTrie.results(for: inputText, limit: strongSelf.maxResultCount) ?? strongSelf.dataSource
             } else {
                 strongSelf.filteredResults = strongSelf.filterResultsFrom(unsortedData: strongSelf.dataSource, with: inputText)

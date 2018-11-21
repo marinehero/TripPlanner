@@ -13,5 +13,6 @@ var Current = Services()
 struct Services {
     
     var api: IGetTrips = APIBundle()
+    var svc: ILoader = Loader()
     
 }

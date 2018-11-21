@@ -60,7 +60,7 @@ extension ViewController {
                 Strategy.calculateCheapestFlight(from: (self.fromAirport?.text)!, dest: (self.destAirport?.text)!, data: data)
             self.refreshDataSources(fromData: fromData, destData: destData)
             self.lbl?.text = "\(total)"
-            self.drawGeodesic(schedule)
+            MapUtil.drawGeodesic(self.mapView, schedule: schedule)
         }
         
     }
@@ -120,7 +120,8 @@ extension ViewController {
         lbl?.text = "0.0"
         
         let ym = rrc.minY+rrc.height+20
-        mapView = makeMap("Map", xPos: 0, yPos:ym, width: view.bounds.width, height: view.bounds.height-ym)
+        mapView = MapUtil.makeMap("Map", xPos: 0, yPos:ym, width: view.bounds.width, height: view.bounds.height-ym)
+        mapView?.delegate = self
 
         view.addSubview(fromAirport!)
         view.addSubview(destAirport!)
@@ -128,7 +129,9 @@ extension ViewController {
         view.addSubview(lbl!)
         view.addSubview(mapView!)
 
-        refreshDataSources(fromData: Loader.load(), destData: Loader.load())
+        let sourceData = Current.svc.load(nil)
+        
+        refreshDataSources(fromData: sourceData, destData: sourceData )
         
     }
 
@@ -158,79 +161,6 @@ extension ViewController {
     
 }
 
-extension ViewController {
-    
-    func makeMap(_ placeholder: String, xPos: CGFloat, yPos: CGFloat, width: CGFloat, height: CGFloat) -> MKMapView {
-        let acpFrame = CGRect(x: xPos, y: yPos, width: width, height: height)
-        let field = MKMapView(frame: acpFrame)
-        field.isZoomEnabled = true
-        field.isScrollEnabled = true
-        field.isRotateEnabled = true
-        field.showsBuildings = true
-        field.showsCompass = true
-        field.showsScale = true
-        field.showsTraffic = false
-        field.showsPointsOfInterest = false
-        field.showsUserLocation = false
-        field.isUserInteractionEnabled = true
-        field.isMultipleTouchEnabled = true
-        let worldRegion = MKCoordinateRegion(MKMapRect.world)
-        field.region = worldRegion
-        field.delegate = self
-        return field
-    }
-    
-    // This method calculates maprect from coordinates
-    func makeRect(coordinates:[CLLocationCoordinate2D]) -> MKMapRect {
-        var rect = MKMapRect()
-        var coordinates = coordinates
-        if !coordinates.isEmpty {
-            let first = coordinates.removeFirst()
-            var top = first.latitude
-            var bottom = first.latitude
-            var left = first.longitude
-            var right = first.longitude
-            coordinates.forEach { coordinate in
-                top = max(top, coordinate.latitude)
-                bottom = min(bottom, coordinate.latitude)
-                left = min(left, coordinate.longitude)
-                right = max(right, coordinate.longitude)
-            }
-            let topLeft = MKMapPoint(CLLocationCoordinate2D(latitude:top, longitude:left))
-            let bottomRight = MKMapPoint(CLLocationCoordinate2D(latitude:bottom, longitude:right))
-            rect = MKMapRect(x:topLeft.x, y:topLeft.y,
-                             width:bottomRight.x - topLeft.x, height:bottomRight.y - topLeft.y)
-        }
-        return rect
-    }
-    
-    /// This method draws geodesic polyline
-    
-    func drawGeodesic(_ schedule: Schedule) {
-
-        let existingRoutes = mapView?.overlays
-        mapView?.removeOverlays(existingRoutes ?? [])
-        
-        if let flights = schedule.flights {
-            var coordinatesArray = [CLLocationCoordinate2D]()
-            for flight in flights {
-                guard let sourceLocation = flight.departure?.airportCoordinates() else { break }
-                guard let destinationLocation = flight.arrival?.airportCoordinates() else { break }
-                var coordinates = [sourceLocation.coordinate,destinationLocation.coordinate]
-                let geodesicPolyline = MKGeodesicPolyline(coordinates: &coordinates, count: 2)
-                mapView?.addOverlay(geodesicPolyline)
-                coordinatesArray.append(sourceLocation.coordinate)
-                coordinatesArray.append(destinationLocation.coordinate)
-            }
-            //mapView?.setVisibleMapRect(self.makeRect(coordinates: coordinatesArray), edgePadding: UIEdgeInsets.init(top: 75.0, left: 75.0, bottom: 75.0, right: 75.0), animated: true)
-            let worldRegion = MKCoordinateRegion(MKMapRect.world)
-            mapView?.region = worldRegion
-        }
-
-    }
-
-}
-
 extension ViewController : MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
@@ -255,32 +185,22 @@ extension ViewController : MKMapViewDelegate {
             let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: planeIdentifier)
                 ?? MKAnnotationView(annotation: viewForAnnotation, reuseIdentifier: planeIdentifier)
             annotationView.image = UIImage(named: "airplane")
-            //annotationView.transform.rotated(by: CGFloat(degreesToRadians(degrees: self.planeDirection)))
             return annotationView
-        } else {
-            var view = mapView.dequeueReusableAnnotationView(withIdentifier: reuseIdentifier)
-            if #available(iOS 11.0, *) {
-                if view == nil {
-                    view = MKMarkerAnnotationView(annotation: viewForAnnotation, reuseIdentifier: reuseIdentifier)
-                }
-                view?.displayPriority = .required
-            } else {
-                if view == nil {
-                    view = MKPinAnnotationView(annotation: viewForAnnotation, reuseIdentifier: reuseIdentifier)
-                }
-            }
-            view?.annotation = viewForAnnotation
-            view?.canShowCallout = true
-            return view
         }
-    }
-    
-    private func radiansToDegrees(radians: Double) -> Double {
-        return radians * 180 / Double.pi
-    }
-    
-    private func degreesToRadians(degrees: Double) -> Double {
-        return degrees * Double.pi / 180
+        var view = mapView.dequeueReusableAnnotationView(withIdentifier: reuseIdentifier)
+        if #available(iOS 11.0, *) {
+            if view == nil {
+                view = MKMarkerAnnotationView(annotation: viewForAnnotation, reuseIdentifier: reuseIdentifier)
+            }
+            view?.displayPriority = .required
+        } else {
+            if view == nil {
+                view = MKPinAnnotationView(annotation: viewForAnnotation, reuseIdentifier: reuseIdentifier)
+            }
+        }
+        view?.annotation = viewForAnnotation
+        view?.canShowCallout = true
+        return view
     }
     
 }

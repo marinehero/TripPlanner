@@ -16,7 +16,12 @@ protocol IGetTrips {
 
 }
 
-struct Loader {
+protocol ILoader {
+    func load( _ from: [String]? ) -> AutoCompleteDataSource
+}
+
+
+struct Loader : ILoader {
     
     private static let fromData = [
         "South Africa","Seoul","Sweden", "Swiss", "Sydney", "America", "Portugal", "Angola", "Andora", "Amazon"
@@ -25,8 +30,8 @@ struct Loader {
         "South Africa","Seoul","Sweden", "Swiss", "America", "Portugal", "Angola", "Andora", "Amazon"
     ]
     
-    static public func load(from: [String] = fromData ) -> AutoCompleteDataSource {
-        return AutoCompleteDataSource(data: from)
+    public func load( _ from: [String]? = fromData ) -> AutoCompleteDataSource {
+        return AutoCompleteDataSource(data: from ?? Loader.fromData)
     }
     
 }
